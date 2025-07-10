@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Line Art | Gaya Buku Mewarnai</title>
+    <title>Generator Line Art | UI Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,9 +25,6 @@
         .canvas-container {
             background: rgba(10, 13, 20, 0.5);
             border: 2px dashed rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: background-color 0.3s, border-color 0.3s;
             min-height: 300px;
         }
@@ -70,6 +67,10 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .btn-active:active {
+            transform: scale(0.98);
+            transition: transform 0.1s;
+        }
     </style>
 </head>
 <body class="text-slate-200 flex items-center justify-center min-h-screen p-4">
@@ -81,15 +82,14 @@
             <p class="text-slate-400 mt-2 text-lg">Ubah foto Anda menjadi halaman mewarnai yang bersih.</p>
         </div>
 
-        <!-- Controls -->
         <div class="bg-black/20 border border-white/10 rounded-xl p-5 mb-6 flex flex-col gap-6">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
-                 <label for="imageLoader" class="w-full lg:w-auto cursor-pointer bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-sky-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2">
+                 <label for="imageLoader" class="btn-active w-full lg:w-auto cursor-pointer bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-sky-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
                     Unggah Gambar
                 </label>
                 <input type="file" id="imageLoader" name="imageLoader" class="hidden" accept="image/*"/>
-                <button id="downloadBtn" class="w-full lg:w-auto bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-emerald-600 hover:to-green-700 transition-all duration-300 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed disabled:opacity-60 flex items-center justify-center gap-2" disabled>
+                <button id="downloadBtn" class="btn-active w-full lg:w-auto bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:from-emerald-600 hover:to-green-700 transition-all duration-300 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed disabled:opacity-60 flex items-center justify-center gap-2" disabled>
                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                     Unduh Hasil
                 </button>
@@ -98,29 +98,36 @@
                 <div>
                     <label for="colorLevels" class="block text-sm font-medium text-slate-300 mb-1">Level Warna (Detail)</label>
                     <input id="colorLevels" type="range" min="2" max="12" value="6" class="w-full">
+                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                        <span>Sederhana</span>
+                        <span>Kompleks</span>
+                    </div>
                 </div>
                 <div>
                     <label for="lineThickness" class="block text-sm font-medium text-slate-300 mb-1">Ketebalan Garis</label>
                     <input id="lineThickness" type="range" min="0" max="3" value="1" class="w-full">
+                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                        <span>Tipis</span>
+                        <span>Tebal</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Canvases -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <h2 class="text-xl font-semibold mb-3 text-center text-white/90">Gambar Asli</h2>
-                <div id="originalContainer" class="canvas-container rounded-lg p-2">
-                    <p id="originalPlaceholder" class="text-slate-400 text-center">Klik 'Unggah Gambar' untuk memulai</p>
-                    <canvas id="originalCanvas"></canvas>
+                <div id="originalContainer" class="canvas-container rounded-lg p-2 relative flex items-center justify-center">
+                    <p id="originalPlaceholder" class="text-slate-400 text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4">Klik 'Unggah Gambar' untuk memulai</p>
+                    <canvas id="originalCanvas" class="relative z-10"></canvas>
                 </div>
             </div>
             <div>
                 <h2 class="text-xl font-semibold mb-3 text-center text-white/90">Hasil Halaman Mewarnai</h2>
-                <div id="resultContainer" class="canvas-container rounded-lg p-2">
-                    <p id="resultPlaceholder" class="text-slate-400">Hasil konversi akan muncul di sini</p>
-                    <div id="loader" class="loader hidden"></div>
-                    <canvas id="lineArtCanvas"></canvas>
+                 <div id="resultContainer" class="canvas-container rounded-lg p-2 relative flex items-center justify-center">
+                    <p id="resultPlaceholder" class="text-slate-400 text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4">Hasil konversi akan muncul di sini</p>
+                    <div id="loader" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 loader hidden"></div>
+                    <canvas id="lineArtCanvas" class="relative z-10"></canvas>
                 </div>
             </div>
         </div>
@@ -172,6 +179,7 @@
 
         function hideLoader() {
             loader.classList.add('hidden');
+            resultPlaceholder.classList.add('hidden');
             lineArtCanvas.classList.add('visible');
         }
 
@@ -213,17 +221,11 @@
             const height = originalCanvas.height;
             const imageData = originalCtx.getImageData(0, 0, width, height);
             
-            // Step 1: Posterize the image to simplify colors
             const posterizedData = posterize(imageData.data, parseInt(colorLevelsSlider.value));
-
-            // Step 2: Find edges in the simplified image
             const edgeData = findEdges(posterizedData, width, height);
-            
-            // Step 3: Thicken the edges if needed
             const thickness = parseInt(lineThicknessSlider.value);
             const finalEdgeData = thickness > 0 ? dilate(edgeData, width, height, thickness) : edgeData;
 
-            // Step 4: Render the final black and white image
             const outputData = lineArtCtx.createImageData(width, height);
             const output = outputData.data;
             for (let i = 0; i < finalEdgeData.length; i++) {
@@ -240,12 +242,6 @@
             downloadBtn.disabled = false;
         }
 
-        /**
-         * Reduces the number of colors in the image.
-         * @param {Uint8ClampedArray} data - The original image data array.
-         * @param {number} levels - The number of color levels per channel.
-         * @returns {Uint8ClampedArray} The posterized image data.
-         */
         function posterize(data, levels) {
             const posterized = new Uint8ClampedArray(data.length);
             const step = 255 / (levels - 1);
@@ -258,45 +254,33 @@
             return posterized;
         }
 
-        /**
-         * Finds edges by comparing neighboring pixel colors in the posterized image.
-         * @returns {Uint8ClampedArray} A black and white map of the edges.
-         */
         function findEdges(data, width, height) {
-            const edges = new Uint8ClampedArray(data.length / 4).fill(255); // Fill with white
-            const threshold = 30; // Color difference threshold to detect an edge
+            const edges = new Uint8ClampedArray(data.length / 4).fill(255);
+            const threshold = 30;
 
             for (let y = 0; y < height - 1; y++) {
                 for (let x = 0; x < width - 1; x++) {
                     const i = (y * width + x) * 4;
-                    
-                    // Compare with pixel to the right
                     const right_i = (y * width + (x + 1)) * 4;
                     const diffX = Math.abs(data[i] - data[right_i]) + Math.abs(data[i+1] - data[right_i+1]) + Math.abs(data[i+2] - data[right_i+2]);
-                    
-                    // Compare with pixel below
                     const down_i = ((y + 1) * width + x) * 4;
                     const diffY = Math.abs(data[i] - data[down_i]) + Math.abs(data[i+1] - data[down_i+1]) + Math.abs(data[i+2] - data[down_i+2]);
 
                     if (diffX > threshold || diffY > threshold) {
-                        edges[y * width + x] = 0; // Black
+                        edges[y * width + x] = 0;
                     }
                 }
             }
             return edges;
         }
         
-        /**
-         * Thickens black lines in the edge map.
-         */
         function dilate(data, width, height, strength) {
             const dilatedData = new Uint8ClampedArray(data.length);
             for(let i=0; i<data.length; i++) dilatedData[i] = data[i];
 
             for (let y = strength; y < height - strength; y++) {
                 for (let x = strength; x < width - strength; x++) {
-                    if (data[y * width + x] === 255) continue; // Skip white pixels
-                    // If current pixel is an edge (black), make its neighbors black
+                    if (data[y * width + x] === 255) continue;
                     for (let i = -strength; i <= strength; i++) {
                         for (let j = -strength; j <= strength; j++) {
                             dilatedData[(y + i) * width + (x + j)] = 0;
